@@ -14,8 +14,8 @@ DEBUG = True
 # This is used when defining unique internal names for various UI elements
 # that need a unique name. It's also recommended to use a company name as
 # part of the ID to better ensure the ID is unique.
-ADDIN_NAME = 'BAMBU'
-COMPANY_NAME = 'Marek'
+ADDIN_NAME = 'ExportSTLToBambuStudio'
+COMPANY_NAME = 'balmar'
 
 # Default output directory used by the STL export command.
 EXPORT_DIRECTORY = os.getenv(

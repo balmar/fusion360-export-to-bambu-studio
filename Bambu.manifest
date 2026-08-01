@@ -1,8 +1,8 @@
 {
     "autodeskProduct": "Fusion",
     "type": "addin",
-    "id": "ExportSTL",
-    "author": "Marek",
+    "id": "ExportSTLToBambuStudio",
+    "author": "balmar",
     "description": {
         "": "Export to STL and open Bambu Studio"
     },

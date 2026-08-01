@@ -35,6 +35,7 @@ def resolve_bambu_studio_executable(explicit_path: Optional[str] = None) -> Opti
         [
             r"C:\Program Files\Bambu Studio\Bambu Studio.exe",
             r"C:\Program Files\Bambu Studio\BambuStudio.exe",
+            r"C:\Program Files\Bambu Studio\bambu-studio.exe",
             r"C:\Program Files (x86)\Bambu Studio\Bambu Studio.exe",
             r"C:\Program Files (x86)\Bambu Studio\BambuStudio.exe",
         ]
