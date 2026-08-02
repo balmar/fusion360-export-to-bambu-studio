@@ -27,10 +27,14 @@ Works on Windows, not sure about other systems.
 ![Download repo ss](resources/download-repo.png)
 2. Place it in the directory `C:\Users\Mark\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\Bambu`
 3. Open **Fusion360**
-4. Press `SHIFT+S`
-
+4. Click `Utilities > Scripts and Add-Ins` or press `SHIFT+S`
+![Scriptts and addins](resources/addins-location.png)
 5. Expand the options next to **+** icon button
-6. Script or add-in from the device
+6. Select `Script or add-in from the device`
+![Addin from device](resources/addin-from-device.png)
 7. Select the add-in directory
+![Dir selection](resources/dir-location.png)
 8. Find the add-in on the list and enable it
+![Addin-list](resources/addin-list.png)
 9. Find the Bambu icon on the Tools panel
+![Button location](resources/button-location.png)
