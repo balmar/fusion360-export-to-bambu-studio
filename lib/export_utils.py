@@ -21,6 +21,16 @@ def build_export_path(output_dir: Union[str, Path], document_name: str, timestam
     return export_dir / f"{base_name}_{stamp}.stl"
 
 
+def clear_export_directory(output_dir: Union[str, Path]) -> None:
+    export_dir = Path(output_dir).expanduser()
+    if not export_dir.exists() or not export_dir.is_dir():
+        return
+
+    for path in export_dir.rglob("*.stl"):
+        if path.is_file():
+            path.unlink()
+
+
 def resolve_bambu_studio_executable(explicit_path: Optional[str] = None) -> Optional[str]:
     candidates = []
 

@@ -26,5 +26,16 @@ EXPORT_DIRECTORY = os.getenv(
 # Optional explicit path to Bambu Studio. Leave blank to auto-detect.
 BAMBU_STUDIO_EXE = os.getenv('BAMBU_STUDIO_PATH', 'C:\\Program Files\\Bambu Studio\\bambu-studio.exe')
 
+FUSION_BAMBU_CLEAR_EXPORTS_DIR_EACH_USE = os.getenv('FUSION_BAMBU_CLEAR_EXPORTS_DIR_EACH_USE', 'False').lower() in ('true', '1', 'yes')
+
 # Palettes
 sample_palette_id = f'{COMPANY_NAME}_{ADDIN_NAME}_palette_id'
+
+WORKSPACE_ID="FusionSolidEnvironment"
+PANEL_ID="SolidScriptsAddinsPanel"
+COMMAND_BESIDE_ID="ScriptsManagerCommand"
+
+CMD_ID = "ExportSelectedSTL"
+CMD_NAME = "Export to Bambu Studio"
+TOOLTIP = "Export the selected body or root component to STL and open Bambu Studio"
+RESOURCE_FOLDER = os.path.join(os.path.dirname(__file__), "resources")

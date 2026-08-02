@@ -1,44 +1,36 @@
-import os
 import subprocess
 import traceback
-from pathlib import Path
 
 import adsk.core
 import adsk.fusion
 
 try:
-    import config
+    from lib.export_utils import build_export_path, clear_export_directory, resolve_bambu_studio_executable
 except ImportError:  # pragma: no cover - fallback for direct package execution
-    from .. import config
+    from ..lib.export_utils import build_export_path, clear_export_directory, resolve_bambu_studio_executable
 
-try:
-    from lib.export_utils import build_export_path, resolve_bambu_studio_executable
-except ImportError:  # pragma: no cover - fallback for direct package execution
-    from ..lib.export_utils import build_export_path, resolve_bambu_studio_executable
+from ..config import (
+    CMD_ID,
+    CMD_NAME,
+    TOOLTIP,
+    RESOURCE_FOLDER,
+    WORKSPACE_ID,
+    PANEL_ID,
+    COMMAND_BESIDE_ID,
+    EXPORT_DIRECTORY,
+    BAMBU_STUDIO_EXE,
+    FUSION_BAMBU_CLEAR_EXPORTS_DIR_EACH_USE,
+)
 
 app = adsk.core.Application.get()
 ui = app.userInterface
 handlers = []
 
-CMD_ID = "ExportSelectedSTL"
-CMD_NAME = "Export to Bambu Studio"
-TOOLTIP = "Export the selected body or root component to STL and open Bambu Studio"
-RESOURCE_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "resources", "")
-RESOURCE_FILE = "bambu_icon.png"
-
-WORKSPACE_ID="FusionSolidEnvironment"
-PANEL_ID="SolidScriptsAddinsPanel"
-COMMAND_BESIDE_ID="ScriptsManagerCommand"
-
 
 def start():
     global app, ui
 
-    # app = adsk.core.Application.get()
-    # ui = app.userInterface
-
     try:
-        app.log('Hello from Bambu Studio Export Add-in', adsk.core.LogLevels.InfoLogLevel)
         cmd_def = ui.commandDefinitions.itemById(CMD_ID)
     except Exception as e:
         app.log('Error while initializing command definition: {}'.format(str(e)), adsk.core.LogLevels.ErrorLogLevel)
@@ -46,7 +38,6 @@ def start():
 
     if not cmd_def:
         try:
-            app.log('Adding command definition', adsk.core.LogLevels.InfoLogLevel)
             cmd_def = ui.commandDefinitions.addButtonDefinition(
                 CMD_ID,
                 CMD_NAME,
@@ -54,7 +45,7 @@ def start():
                 RESOURCE_FOLDER,
             )
         except Exception as e:
-            app.log('Error while creating command definition: {}'.format(str(e)), adsk.core.LogLevels.ErrorLogLevel)
+            app.log('Error while creating command definition: {}. \nFalling back to default'.format(str(e)), adsk.core.LogLevels.ErrorLogLevel)
             cmd_def = ui.commandDefinitions.addButtonDefinition(
                 CMD_ID,
                 CMD_NAME,
@@ -66,7 +57,7 @@ def start():
     handlers.append(on_created)
 
     panel = _get_toolbar_panel()
-    app.log(f'Adding command to toolbar panel: {panel.name if panel else "None"}', adsk.core.LogLevels.InfoLogLevel)
+
     if panel:
         control = panel.controls.addCommand(cmd_def, COMMAND_BESIDE_ID, False)
         if control:
@@ -87,21 +78,19 @@ def stop():
 
 
 def _get_toolbar_panel():
-    global app, ui
     if ui is None:
         return None
 
     workspace = ui.workspaces.itemById(WORKSPACE_ID)
-    app.log('Workspace: {}'.format(workspace.name if workspace else 'None'), adsk.core.LogLevels.InfoLogLevel)
+
     if workspace:
         panel = workspace.toolbarPanels.itemById(PANEL_ID)
         if panel:
             return panel
 
     panel = ui.allToolbarPanels.itemById(PANEL_ID)
-    app.log('Panel: {}'.format(panel.name if panel else 'None'), adsk.core.LogLevels.InfoLogLevel)
+
     if not panel:
-        app.log('Falling back to SolidCreatePanel', adsk.core.LogLevels.InfoLogLevel)
         panel = ui.allToolbarPanels.itemById("SolidCreatePanel")
     return panel
 
@@ -127,7 +116,10 @@ class ExecuteHandler(adsk.core.CommandEventHandler):
                 ui.messageBox("Select a body or component to export, or use the root component.")
                 return
 
-            export_dir = _resolve_output_directory()
+            export_dir = EXPORT_DIRECTORY
+            if FUSION_BAMBU_CLEAR_EXPORTS_DIR_EACH_USE:
+                clear_export_directory(export_dir)
+
             export_path = build_export_path(export_dir, app.activeDocument.name)
             export_path = _build_unique_export_path(export_path)
 
@@ -142,10 +134,9 @@ class ExecuteHandler(adsk.core.CommandEventHandler):
                 ui.messageBox(f"STL export failed for {export_path.name}.")
                 return
 
-            studio_path = resolve_bambu_studio_executable(getattr(config, "BAMBU_STUDIO_EXE", None))
+            studio_path = resolve_bambu_studio_executable(BAMBU_STUDIO_EXE)
             if studio_path:
                 subprocess.Popen([studio_path, str(export_path)], shell=False)
-                # ui.messageBox(f"Exported STL:\n{export_path}\n\nOpened Bambu Studio.")
             else:
                 ui.messageBox(
                     f"Exported STL:\n{export_path}\n\nBambu Studio was not found. "
@@ -176,12 +167,6 @@ def _get_export_target():
     return None
 
 
-def _resolve_output_directory():
-    configured_dir = getattr(config, "EXPORT_DIRECTORY", None)
-    if configured_dir:
-        return Path(configured_dir).expanduser()
-
-    return Path.home() / "Documents" / "Bambu Studio" / "Exports"
 
 
 def _build_unique_export_path(path):
