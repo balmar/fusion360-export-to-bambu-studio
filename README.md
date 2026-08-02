@@ -17,9 +17,9 @@ Works on Windows, not sure about other systems.
 # Configuration
 | Environment variable | Default value | Description| 
 |---------|------------|-------------|
-| BAMBU_STUDIO_PATH | 'C:\\Program Files\\Bambu Studio\\bambu-studio.exe' | Path to bambu-studio executable |
-| FUSION_BAMBU_EXPORT_DIR | 'C:\\Users\\YOUR_USERNAME\\Documents\\Bambu Studio\\Exports' | Path to where the STL models should be exported to |
-| FUSION_BAMBU_CLEAR_EXPORTS_DIR_EACH_USE | FALSE | Set to TRUE to make the export dir be cleared each time a new model is exported |
+| BAMBU_STUDIO_PATH | `C:\\Program Files\\Bambu Studio\\bambu-studio.exe` | Path to bambu-studio executable |
+| FUSION_BAMBU_EXPORT_DIR | `C:\\Users\\YOUR_USERNAME\\Documents\\Bambu Studio\\Exports` | Path to where the STL models should be exported to |
+| FUSION_BAMBU_CLEAR_EXPORTS_DIR_EACH_USE | `FALSE` | Set to TRUE to make the export dir be cleared each time a new model is exported |
 
 
 # Installation
